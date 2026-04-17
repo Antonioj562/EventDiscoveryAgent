@@ -1,0 +1,44 @@
+[
+  {
+    "id": 1,
+    "name": "Indie Rock Night",
+    "category": "concert",
+    "location": "CA",
+    "description": "Small venue indie rock bands performing live"
+  },
+  {
+    "id": 2,
+    "name": "Underground Music Showcase",
+    "category": "concert",
+    "location": "CA",
+    "description": "Local underground artists and indie performers"
+  },
+  {
+    "id": 3,
+    "name": "Tech AI Conference",
+    "category": "conference",
+    "location": "CA",
+    "description": "Talks on artificial intelligence and machine learning"
+  },
+  {
+    "id": 4,
+    "name": "Startup Networking Expo",
+    "category": "conference",
+    "location": "CA",
+    "description": "Entrepreneurs and tech networking event"
+  },
+  {
+    "id": 5,
+    "name": "Acoustic Chill Night",
+    "category": "concert",
+    "location": "CA",
+    "description": "Relaxed acoustic performances in intimate venues"
+  },
+  {
+    "id": 6,
+    "name": "Auto Show 2026",
+    "category": "expo",
+    "location": "CA",
+    "description": "Latest cars, electric vehicles, and concept designs"
+  }
+]
