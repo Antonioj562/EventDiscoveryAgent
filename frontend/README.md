@@ -1,46 +1,128 @@
-# Getting Started with Create React App
+# Event Discovery Agent Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This frontend is the current UI for the Event Discovery Agent project. It is a small React + Vite app focused on one clear loop: describe the kind of live music experience you want, get recommended events back from the backend, and feed signals back into the system so the agent can learn over time.
 
-## Available Scripts
+The app already feels like a product instead of a wireframe. There is a lightweight auth flow, a recommendation workspace, visible agent activity, and a history view for reviewing or removing saved feedback.
 
-In the project directory, you can run:
+## What is in the app right now
 
-### `npm start`
+### Auth flow
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- Users can register and sign in from dedicated screens.
+- Auth is intentionally lightweight for now and stored in `localStorage`.
+- Each user gets a stable `sessionId` derived from their email so the backend can tie recommendations and feedback history together.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+### Recommendation workspace
 
-### `npm test`
+- The main screen lets users describe the kind of concert night they want in plain language.
+- There are starter prompts for quick testing and demos.
+- The frontend sends the prompt to the backend recommendation endpoint and renders both:
+  - a short explanation of why the recommendations fit
+  - a list of suggested events
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Visible agent behavior
 
-### `npm run build`
+- The UI includes an "Agent Activity" panel to make the recommendation process feel more transparent.
+- It shows the intended steps of the workflow: reading taste signals, scanning the catalog, ranking matches, and generating a summary.
+- This is especially useful in demos because it helps people understand that the system is doing more than returning static search results.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Feedback history
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- Users can mark an event as `interested`, `not interested`, or `attended`.
+- The history page pulls those saved signals back from the backend.
+- Users can filter the history by feedback type and remove items if they want to correct what the agent has learned.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Current visual direction
 
-### `npm run eject`
+- The interface is built around a moody live-music look with warm accent colors, glassy panels, and responsive layouts.
+- It works on both desktop and smaller screens without collapsing into a generic dashboard.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## Tech stack
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- React 18
+- TypeScript
+- Vite
+- React Router
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+## Project structure
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+```text
+src/
+  components/
+    AppShell.tsx       # Protected app layout and navigation
+    AgentPulse.tsx     # Agent activity panel
+  context/
+    AuthContext.tsx    # Local auth/session handling
+  lib/
+    api.ts             # Backend API calls
+  pages/
+    LoginPage.tsx
+    RegisterPage.tsx
+    RecommendedPage.tsx
+    HistoryPage.tsx
+  App.tsx
+  main.tsx
+  styles.css
+```
 
-## Learn More
+## Running the frontend
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Install dependencies:
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```bash
+npm install
+```
+
+Start the dev server:
+
+```bash
+npm run dev
+```
+
+Build for production:
+
+```bash
+npm run build
+```
+
+Preview the production build locally:
+
+```bash
+npm run preview
+```
+
+## Backend connection
+
+The frontend expects the backend API to be available at:
+
+```text
+http://127.0.0.1:8000
+```
+
+You can override that with:
+
+```bash
+VITE_API_BASE_URL=http://your-api-host:8000
+```
+
+The current frontend uses these endpoints:
+
+- `POST /events/recommend`
+- `POST /events/feedback`
+- `GET /events/history/:sessionId`
+- `DELETE /events/history/:sessionId`
+
+## Notes on the current implementation
+
+- Authentication is frontend-only right now and meant to support product flow, not production security.
+- The recommendation and history flows are real API integrations.
+- The app is in a good place for demos and iteration, especially around recommendation quality, agent transparency, and feedback-driven personalization.
+
+## Good next steps
+
+- Replace local-only auth with backend-backed authentication.
+- Add loading and error states with a bit more granularity around recommendation requests.
+- Expand event cards with richer metadata like date, venue, and ticket links.
+- Add tests around the auth flow and API-driven pages.
+
+This README is meant to reflect the app as it exists today: a solid frontend slice of the product, with a clear user loop and room to keep sharpening the recommendation experience.
