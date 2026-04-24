@@ -107,3 +107,22 @@ $ streamlit run tests/demo.py
     - not_interested
     - attended
   4. Submit
+
+### 5. Run React Frontend
+The project now includes a React + TypeScript frontend in `frontend/`.
+
+From the repo root:
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Frontend URL:
+- http://127.0.0.1:5173
+
+Backend URL expected by default:
+- http://127.0.0.1:8000
+
+Optional:
+- Set `VITE_API_BASE_URL` in `frontend/.env` if your backend runs elsewhere.
