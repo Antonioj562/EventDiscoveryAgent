@@ -1,12 +1,18 @@
 import math
-from backend.services.event_service import get_events
+import re
+from collections import Counter
+
+from backend.services.event_service import search_events
 from backend.services.llm_service import embed_text
 
-# cosine similarity
+
+WORD_RE = re.compile(r"[a-z0-9]+")
+
+
 def cosine_similarity(a, b):
-    dot = sum(x*y for x, y in zip(a, b))
-    norm_a = math.sqrt(sum(x*x for x in a))
-    norm_b = math.sqrt(sum(x*x for x in b))
+    dot = sum(x * y for x, y in zip(a, b))
+    norm_a = math.sqrt(sum(x * x for x in a))
+    norm_b = math.sqrt(sum(x * x for x in b))
 
     if norm_a == 0 or norm_b == 0:
         return 0
@@ -14,52 +20,78 @@ def cosine_similarity(a, b):
     return dot / (norm_a * norm_b)
 
 
-# Precompute embeddings once (important)
-event_cache = []
+def tokenize(text: str):
+    return WORD_RE.findall((text or "").lower())
 
-def load_event_embeddings():
-    global event_cache
-    events = get_events()
 
-    event_cache = []
-    for e in events:
-        text = f"{e['name']} {e['description']} {e['category']}"
-        embedding = embed_text(text)
+def lexical_similarity(left: str, right: str):
+    left_tokens = Counter(tokenize(left))
+    right_tokens = Counter(tokenize(right))
+    overlap = sum(min(left_tokens[token], right_tokens[token]) for token in left_tokens)
+    total = sum(left_tokens.values()) + sum(right_tokens.values())
+    if total == 0:
+        return 0
+    return (2 * overlap) / total
 
-        event_cache.append({
-            "event": e,
-            "embedding": embedding
-        })
+
+def build_event_text(event: dict):
+    return " ".join(
+        part
+        for part in [
+            event.get("name", ""),
+            event.get("description", ""),
+            event.get("category", ""),
+            event.get("venue", ""),
+            event.get("location", ""),
+        ]
+        if part
+    )
+
+
+def preference_overlap_score(candidate_text: str, saved_events: list[dict]):
+    return sum(lexical_similarity(candidate_text, build_event_text(event)) for event in saved_events)
 
 
 def event_search_tool(query: str, user_prefs: dict):
-    if not event_cache:
-        load_event_embeddings()
+    search_result = search_events(query)
+    candidates = search_result["events"]
 
-    query_embedding = embed_text(query)
+    use_embeddings = True
+    try:
+        query_embedding = embed_text(query)
+    except Exception:
+        use_embeddings = False
+        query_embedding = None
 
     results = []
 
-    for item in event_cache:
-        score = cosine_similarity(query_embedding, item["embedding"])
+    disliked_ids = {event.get("id") for event in user_prefs.get("not_interested", [])}
 
-        event_text = item["event"]["description"].lower()
+    for event in candidates:
+        candidate_text = build_event_text(event)
+        score = lexical_similarity(query, candidate_text)
 
-        # preference boost
-        for a in user_prefs.get("attended", []):
-            if a.lower() in event_text:
-                score += 0.2
+        if use_embeddings and query_embedding:
+            try:
+                score += cosine_similarity(query_embedding, embed_text(candidate_text))
+            except Exception:
+                pass
 
-        for l in user_prefs.get("liked", []):
-            if l.lower() in event_text:
-                score += 0.1
-
-        # skip disliked
-        if any(d.lower() in event_text for d in user_prefs.get("disliked", [])):
+        if event.get("id") in disliked_ids:
             continue
 
-        results.append((score, item["event"]))
+        score += 0.18 * preference_overlap_score(candidate_text, user_prefs.get("attended", []))
+        score += 0.1 * preference_overlap_score(candidate_text, user_prefs.get("interested", []))
+        score -= 0.08 * preference_overlap_score(candidate_text, user_prefs.get("not_interested", []))
 
-    results.sort(key=lambda x: x[0], reverse=True)
+        results.append((score, event))
 
-    return [r[1] for r in results[:5]]
+    results.sort(key=lambda item: item[0], reverse=True)
+
+    return {
+        "events": [event for _, event in results[:5]],
+        "source": search_result["source"],
+        "fallback_reason": search_result.get("fallback_reason"),
+        "cached": search_result.get("cached", False),
+        "attempts": search_result.get("attempts", []),
+    }

@@ -1,57 +1,61 @@
-from backend.agent.prompt import AGENT_PROMPT
 from backend.agent.tools import event_search_tool
 from backend.services.llm_service import generate_llm_response
-
-import json
-import re
-
-# Simple in-memory session store
-sessions = {}
-
-def safe_parse_json(text):
-    try:
-        return json.loads(text)
-    except:
-        # Try to extract JSON from messy response
-        match = re.search(r'\{.*\}', text, re.DOTALL)
-        if match:
-            try:
-                return json.loads(match.group())
-            except:
-                return None
-        return None
+from backend.services.session_service import load_sessions, get_or_create_session
 
 
-def get_or_create_session(session_id: str):
-    if session_id not in sessions:
-        sessions[session_id] = {
-            "preferences": {
-                "liked": [],
-                "disliked": [],
-                "attended": []
-            },
-            "history": []
-        }
-    return sessions[session_id]
+sessions = load_sessions()
+
 
 def agent_loop(session_id: str, query: str):
-    session = get_or_create_session(session_id)
+    session = get_or_create_session(sessions, session_id)
     prefs = session["preferences"]
+    search_result = event_search_tool(query, prefs)
+    events = search_result["events"]
 
-    # ALWAYS search
-    events = event_search_tool(query, prefs)
+    if not events:
+        attempts = search_result.get("attempts", [])
+        attempted_keywords = ", ".join(
+            f"#{attempt['attempt']}: {attempt['keyword']}"
+            for attempt in attempts
+        ) or "none"
+        explanation = (
+            "No matching Ticketmaster music events were found for this prompt yet. "
+            f"Keyword attempts tried: {attempted_keywords}."
+        )
+        return {
+            "recommendations": [],
+            "explanation": explanation,
+            "meta": {
+                "source": search_result["source"],
+                "fallback_reason": search_result.get("fallback_reason"),
+                "cached": search_result.get("cached", False),
+                "attempts": attempts,
+            },
+        }
 
-    # Only use LLM for explanation (cheaper)
+    event_summaries = [
+        f"{event['name']} ({event['category']}) at {event['venue'] or event['location']}"
+        for event in events[:5]
+    ]
     explain_prompt = f"""
-    User: {query}
-    Events: {events}
+    User request: {query}
+    Saved interested events: {[event["name"] for event in prefs["interested"][:5]]}
+    Saved attended events: {[event["name"] for event in prefs["attended"][:5]]}
+    Saved not interested events: {[event["name"] for event in prefs["not_interested"][:5]]}
+    Candidate events: {event_summaries}
 
-    Explain briefly why these match.
+    Explain briefly why these recommendations fit the user's interests.
     """
 
     explanation = generate_llm_response(explain_prompt)
 
     return {
         "recommendations": events,
-        "explanation": explanation
+        "explanation": explanation,
+        "meta": {
+            "source": search_result["source"],
+            "fallback_reason": search_result.get("fallback_reason"),
+            "cached": search_result.get("cached", False),
+            "attempts": search_result.get("attempts", []),
+        },
     }
