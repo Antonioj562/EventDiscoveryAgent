@@ -1,8 +1,100 @@
 {
   "antoniojloyola-gmail-com": {
     "preferences": {
-      "interested": [],
-      "not_interested": [],
+      "interested": [
+        {
+          "id": "vvG1IZ_AKnSEae",
+          "name": "Curebound Concert for Cures: P!NK",
+          "category": "Music / Pop / Pop",
+          "location": "San Diego, CA",
+          "description": "Gates open at 6:30pm.",
+          "venue": "Petco Park",
+          "start": "2026-05-16T03:00:00Z",
+          "localDate": "2026-05-15",
+          "localTime": "20:00:00",
+          "timezone": "America/Los_Angeles",
+          "url": "https://www.ticketmaster.com/curebound-concert-for-cures-pnk-san-diego-california-05-15-2026/event/0A006454EACE7242",
+          "imageUrl": "https://s1.ticketm.net/dam/e/812/454f0963-09bf-4932-9666-bb65d3324812_RECOMENDATION_16_9.jpg",
+          "source": "ticketmaster"
+        },
+        {
+          "id": "Z7r9jZ1A7xZ4k",
+          "name": "Imagine Dragons (21 and Over)",
+          "category": "Music / Pop / Pop Rock",
+          "location": "Highland, CA",
+          "description": "Music featuring pop",
+          "venue": "Yaamava Theater",
+          "start": "2026-07-24T03:00:00Z",
+          "localDate": "2026-07-23",
+          "localTime": "20:00:00",
+          "timezone": "",
+          "url": "https://www.ticketmaster.com/event/Z7r9jZ1A7xZ4k",
+          "imageUrl": "https://s1.ticketm.net/dam/a/e8c/5265b9d2-a06c-4dc8-a432-a8dd9d042e8c_RETINA_PORTRAIT_3_2.jpg",
+          "source": "ticketmaster"
+        },
+        {
+          "id": "G5vYZ_FLi21bJ",
+          "name": "SOMBR - You Are The Reason Tour",
+          "category": "Music / Rock / Alternative Rock",
+          "location": "Sacramento, CA",
+          "description": "Music featuring rock",
+          "venue": "Golden 1 Center",
+          "start": "2026-10-07T02:30:00Z",
+          "localDate": "2026-10-06",
+          "localTime": "19:30:00",
+          "timezone": "America/Los_Angeles",
+          "url": "https://www.ticketmaster.com/sombr-you-are-the-reason-tour-sacramento-california-10-06-2026/event/1C006487EC3CA626",
+          "imageUrl": "https://s1.ticketm.net/dam/a/0b8/d1bc79bb-d6e6-4735-bc5c-190572eec0b8_RETINA_PORTRAIT_3_2.jpg",
+          "source": "ticketmaster"
+        },
+        {
+          "id": "vv170Z_AGkmI0jmT",
+          "name": "Gorillaz - The Mountain Tour",
+          "category": "Music / Rock / Alternative Rock",
+          "location": "Inglewood, CA",
+          "description": "Music featuring rock",
+          "venue": "Kia Forum",
+          "start": "2026-10-25T02:30:00Z",
+          "localDate": "2026-10-24",
+          "localTime": "19:30:00",
+          "timezone": "America/Los_Angeles",
+          "url": "https://www.ticketmaster.com/gorillaz-the-mountain-tour-inglewood-california-10-24-2026/event/0900645BA891CBBF",
+          "imageUrl": "https://s1.ticketm.net/dam/a/88b/ce224ebd-7acf-4b04-8f04-0038dddc988b_RECOMENDATION_16_9.jpg",
+          "source": "ticketmaster"
+        }
+      ],
+      "not_interested": [
+        {
+          "id": "1A9Zk8PGkd9hupb",
+          "name": "Phish Live at Sphere - Suite Reservation",
+          "category": "Music / Rock / Alternative Rock",
+          "location": "Las Vegas, NV",
+          "description": "Music featuring rock",
+          "venue": "Sphere",
+          "start": "2026-05-01T03:00:00Z",
+          "localDate": "2026-04-30",
+          "localTime": "20:00:00",
+          "timezone": "America/Los_Angeles",
+          "url": "https://www.gofevo.com/event/PhishLiveatSphere015",
+          "imageUrl": "https://s1.ticketm.net/dam/a/491/11ee7169-2bb4-4662-880e-09a207a2d491_RETINA_PORTRAIT_16_9.jpg",
+          "source": "ticketmaster"
+        },
+        {
+          "id": "1A9Zk8PGkd9hcph",
+          "name": "Phish Live at Sphere - Suite Reservation",
+          "category": "Music / Rock / Alternative Rock",
+          "location": "Las Vegas, NV",
+          "description": "Music featuring rock",
+          "venue": "Sphere",
+          "start": "2026-05-02T03:00:00Z",
+          "localDate": "2026-05-01",
+          "localTime": "20:00:00",
+          "timezone": "America/Los_Angeles",
+          "url": "https://www.gofevo.com/event/PhishLiveatSphere016",
+          "imageUrl": "https://s1.ticketm.net/dam/a/491/11ee7169-2bb4-4662-880e-09a207a2d491_RETINA_PORTRAIT_16_9.jpg",
+          "source": "ticketmaster"
+        }
+      ],
       "attended": []
     }
   }
