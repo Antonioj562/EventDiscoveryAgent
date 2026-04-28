@@ -1,3 +1,5 @@
+import { RevealSection } from "./RevealSection";
+
 interface AgentPulseProps {
   isLoading: boolean;
   hasResults: boolean;
@@ -12,7 +14,7 @@ const steps = [
 
 export function AgentPulse({ isLoading, hasResults }: AgentPulseProps) {
   return (
-    <section className="agent-panel">
+    <RevealSection className="agent-panel">
       <div className="section-heading">
         <p className="eyebrow">Agent Activity</p>
         <h3>Show the intelligence, not just the result.</h3>
@@ -41,9 +43,12 @@ export function AgentPulse({ isLoading, hasResults }: AgentPulseProps) {
       </div>
 
       <p className="agent-note">
-        Product recommendation: keep this visible in demos so users can see the
-        agent reason, search, and learn from feedback in real time.
+        {isLoading
+          ? "Scanning the catalog and weighing your saved feedback."
+          : hasResults
+            ? "Recommendation logic is ready for another prompt."
+            : "Run a prompt to start the recommendation loop."}
       </p>
-    </section>
+    </RevealSection>
   );
 }
