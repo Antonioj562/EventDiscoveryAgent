@@ -1005,17 +1005,11 @@ textarea {
 
 .page-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.35fr) minmax(17.5rem, 0.65fr);
-  grid-template-areas:
-    "hero agent"
-    "summary agent"
-    "results results";
   gap: 1rem;
-  align-items: start;
+  grid-template-columns: minmax(0, 1fr);
 }
 
 .hero-card,
-.agent-panel,
 .summary-card,
 .results-card,
 .history-header,
@@ -1028,28 +1022,26 @@ textarea {
   min-width: 0;
 }
 
+.summary-card,
+.results-card {
+  width: 100%;
+}
+
 .hero-card {
-  grid-area: hero;
+  min-height: 100%;
 }
 
 .hero-card .section-heading h2 {
   max-width: 760px;
 }
 
-.agent-panel {
-  grid-area: agent;
-  position: sticky;
-  top: calc(var(--topbar-height) + 1rem);
-}
-
 .summary-card {
-  grid-area: summary;
   background: var(--surface-blue);
   border-color: #bfdbfe;
 }
 
 .results-card {
-  grid-area: results;
+  min-height: 100%;
 }
 
 .starter-block {
@@ -1070,48 +1062,10 @@ textarea {
   gap: 0.75rem;
 }
 
-.agent-steps,
 .event-list,
 .history-list {
   display: grid;
   gap: 1rem;
-}
-
-.agent-steps {
-  margin-top: 1.2rem;
-}
-
-.agent-step {
-  display: grid;
-  grid-template-columns: 18px 1fr;
-  gap: 0.75rem;
-  align-items: start;
-}
-
-.agent-step p {
-  margin: 0;
-  color: var(--muted-strong);
-}
-
-.step-dot {
-  width: 10px;
-  height: 10px;
-  margin-top: 0.45rem;
-  background: #cbd5e1;
-  border-radius: 999px;
-}
-
-.step-dot.is-active {
-  background: var(--primary);
-}
-
-.step-dot.is-complete {
-  background: var(--success);
-}
-
-.agent-note {
-  margin: 1.2rem 0 0;
-  color: var(--muted);
 }
 
 .summary-copy {
@@ -1137,6 +1091,13 @@ textarea {
   border-radius: var(--radius-md);
   padding: 1.15rem;
   min-width: 0;
+  display: grid;
+  gap: 0.85rem;
+  align-content: start;
+}
+
+.event-card {
+  width: 100%;
 }
 
 .event-meta {
@@ -1186,10 +1147,9 @@ textarea {
 }
 
 .history-item {
-  display: flex;
-  justify-content: space-between;
-  gap: 1rem;
-  align-items: center;
+  grid-template-columns: minmax(0, 1fr) auto;
+  justify-content: stretch;
+  align-items: start;
 }
 
 .history-item > div {
@@ -1410,15 +1370,6 @@ textarea {
 
   .page-grid {
     grid-template-columns: 1fr;
-    grid-template-areas:
-      "hero"
-      "agent"
-      "summary"
-      "results";
-  }
-
-  .agent-panel {
-    position: static;
   }
 
   .footer-inner {
@@ -1545,6 +1496,10 @@ textarea {
   .footer-inner {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .history-item {
+    grid-template-columns: 1fr;
   }
 
   .footer-inner {

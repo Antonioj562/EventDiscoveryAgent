@@ -1,5 +1,4 @@
 import { FormEvent, useState } from "react";
-import { AgentPulse } from "../components/AgentPulse";
 import { RevealSection } from "../components/RevealSection";
 import { useAuth } from "../context/AuthContext";
 import { fetchRecommendations, submitFeedback } from "../lib/api";
@@ -130,8 +129,6 @@ export function RecommendedPage() {
           </div>
         </form>
       </RevealSection>
-
-      <AgentPulse isLoading={loading} hasResults={events.length > 0 || !!summary} />
 
       <RevealSection className="summary-card">
         <div className="section-heading">
