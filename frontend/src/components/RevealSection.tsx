@@ -17,6 +17,8 @@ export function RevealSection({
       return;
     }
 
+    section.classList.add("is-reveal-ready");
+
     const prefersReducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
@@ -26,10 +28,17 @@ export function RevealSection({
       return;
     }
 
+    const reveal = () => {
+      section.classList.add("is-visible");
+    };
+
+    const fallback = window.setTimeout(reveal, 1400);
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          section.classList.add("is-visible");
+          window.clearTimeout(fallback);
+          reveal();
           observer.unobserve(section);
         }
       },
@@ -41,7 +50,10 @@ export function RevealSection({
 
     observer.observe(section);
 
-    return () => observer.disconnect();
+    return () => {
+      window.clearTimeout(fallback);
+      observer.disconnect();
+    };
   }, []);
 
   return (

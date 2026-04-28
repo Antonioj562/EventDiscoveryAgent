@@ -28,8 +28,9 @@ export function TopBar({ variant = "app" }: TopBarProps) {
       <nav className="top-nav" aria-label={isAuth ? "Authentication page" : "Application"}>
         {isAuth ? (
           <>
+            <a href="#how-it-works">How it works</a>
             <a href="#features">Features</a>
-            <a href="#about">About</a>
+            <a href="#use-cases">Use cases</a>
           </>
         ) : (
           <>

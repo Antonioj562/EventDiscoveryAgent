@@ -3,46 +3,69 @@ import { RevealSection } from "./RevealSection";
 const featureCards = [
   {
     icon: "01",
-    label: "Taste memory",
-    title: "Recommendations shaped by previous feedback.",
-    copy: "Interested, attended, and skipped events all become visible context for the next shortlist.",
+    label: "Unified Interface",
+    title: "Plan, compare, save feedback, and review history in one place.",
+    copy: "The core recommendation loop stays together, so users do not need to jump between tools.",
   },
   {
     icon: "02",
-    label: "Transparent ranking",
-    title: "The agent explains why each set belongs.",
-    copy: "Short summaries keep the reasoning close to the results, so the list feels curated instead of random.",
+    label: "Smart Automation",
+    title: "Plain-language prompts become ranked event suggestions.",
+    copy: "The agent handles the search and ranking work while keeping the workflow easy to start.",
   },
   {
     icon: "03",
-    label: "Mixed intent",
-    title: "Useful for students, nightlife plans, and travel days.",
-    copy: "Prompts can stay social and loose, or become practical around location, schedule, and crowd size.",
+    label: "Real-time Data",
+    title: "Recommendations use the current catalog and latest saved signals.",
+    copy: "Feedback updates the recommendation context so the next shortlist can become more relevant.",
   },
   {
     icon: "04",
-    label: "Fast iteration",
-    title: "Scroll, refine, save, and remove signals.",
-    copy: "The feedback history stays editable, which keeps the recommendation loop from drifting.",
+    label: "Scalable Infrastructure",
+    title: "Ready for richer data, stronger auth, and larger event sets.",
+    copy: "The interface stays simple while leaving room for the product to grow.",
   },
 ];
 
-const agentPros = [
+const howItWorks = [
   {
-    title: "Unified Interface",
-    copy: "Plan, compare, save feedback, and review history without jumping between tools.",
+    step: "01",
+    title: "Describe",
+    copy: "Tell the agent what kind of event you want, from city and genre to crowd size and mood.",
   },
   {
-    title: "Smart Automation",
-    copy: "The agent turns plain-language prompts into ranked event suggestions.",
+    step: "02",
+    title: "Get recommendations",
+    copy: "Review a focused shortlist with a clear explanation of why each suggestion fits.",
   },
   {
-    title: "Real-time Data",
-    copy: "Recommendations are built from the current catalog and your latest saved signals.",
+    step: "03",
+    title: "Save feedback",
+    copy: "Mark events as interested, not interested, or attended so the agent learns your signals.",
   },
   {
-    title: "Scalable Infrastructure",
-    copy: "The interface is ready for stronger auth, richer data sources, and larger event sets.",
+    step: "04",
+    title: "Improve results",
+    copy: "Use your history to refine future searches and remove signals that no longer match your taste.",
+  },
+];
+
+const useCases = [
+  {
+    title: "Students",
+    copy: "Find affordable, social events around campus without scanning every local listing.",
+  },
+  {
+    title: "Travelers",
+    copy: "Quickly discover things to do in a new city based on the kind of night you want.",
+  },
+  {
+    title: "Conference attendees",
+    copy: "Plan useful evening options near your venue, hotel, or work schedule.",
+  },
+  {
+    title: "Weekend planners",
+    copy: "Turn a loose idea into a shortlist for Friday or Saturday without overthinking it.",
   },
 ];
 
@@ -72,12 +95,35 @@ const faqs = [
 export function AuthScrollSections() {
   return (
     <>
+      <RevealSection className="how-section" id="how-it-works" aria-labelledby="how-title">
+        <div className="section-heading how-heading">
+          <p className="eyebrow">How it works</p>
+          <h2 id="how-title">From prompt to better recommendations in four steps.</h2>
+        </div>
+
+        <div className="how-grid">
+          {howItWorks.map((item) => (
+            <article className="how-card" key={item.title}>
+              <div className="how-marker">
+                <span className="how-icon" aria-hidden="true">
+                  {item.step}
+                </span>
+              </div>
+              <div className="how-copy-card">
+                <h3>{item.title}</h3>
+                <p>{item.copy}</p>
+              </div>
+            </article>
+          ))}
+        </div>
+      </RevealSection>
+
       <RevealSection className="feature-section" id="features" aria-labelledby="features-title">
         <div className="section-heading feature-heading">
-          <p className="eyebrow">Discovery Loop</p>
+          <p className="eyebrow">Features</p>
           <h2 id="features-title">
-            A quick look at what the agent helps{" "}
-            <span className="gradient-text">coordinate.</span>
+            The practical pieces that make the agent{" "}
+            <span className="gradient-text">useful.</span>
           </h2>
         </div>
 
@@ -93,29 +139,17 @@ export function AuthScrollSections() {
         </div>
       </RevealSection>
 
-      <RevealSection className="about-section" id="about" aria-labelledby="about-title">
-        <div className="about-content">
-          <div className="section-heading">
-            <p className="eyebrow">About</p>
-            <h2 id="about-title">Built for fast, low-friction event decisions.</h2>
-          </div>
-          <p>
-            Event Discovery keeps the recommendation loop simple: describe the kind of
-            night you want, review a short explanation, and use feedback to improve what
-            the agent remembers next time.
-          </p>
+      <RevealSection className="use-section" id="use-cases" aria-labelledby="use-title">
+        <div className="section-heading use-heading">
+          <p className="eyebrow">Use cases</p>
+          <h2 id="use-title">Designed for different ways people plan events.</h2>
         </div>
 
-        <div className="about-pros" aria-label="Agent advantages">
-          {agentPros.map((item) => (
-            <article className="about-pro-card" key={item.title}>
-              <span className="about-check" aria-hidden="true">
-                &#10003;
-              </span>
-              <div>
-                <h3>{item.title}</h3>
-                <p>{item.copy}</p>
-              </div>
+        <div className="use-grid">
+          {useCases.map((item) => (
+            <article className="use-card" key={item.title}>
+              <h3>{item.title}</h3>
+              <p>{item.copy}</p>
             </article>
           ))}
         </div>
