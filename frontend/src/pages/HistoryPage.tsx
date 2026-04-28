@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { RevealSection } from "../components/RevealSection";
 import { useAuth } from "../context/AuthContext";
 import { fetchHistory, removeHistoryItem } from "../lib/api";
 import type { FeedbackType } from "../types";
@@ -20,6 +21,8 @@ export function HistoryPage() {
   const [items, setItems] = useState<HistoryItem[]>([]);
   const [filter, setFilter] = useState<"all" | FeedbackType>("all");
   const [status, setStatus] = useState("Loading history...");
+  const [isLoading, setIsLoading] = useState(true);
+  const [removingKey, setRemovingKey] = useState<string | null>(null);
 
   useEffect(() => {
     async function loadHistory() {
@@ -48,6 +51,8 @@ export function HistoryPage() {
         setStatus(nextItems.length ? "" : "No history yet. Give feedback on recommendations.");
       } catch (error) {
         setStatus(error instanceof Error ? error.message : "Unable to load history.");
+      } finally {
+        setIsLoading(false);
       }
     }
 
@@ -62,6 +67,9 @@ export function HistoryPage() {
       return;
     }
 
+    const itemKey = `${item.type}-${item.text}`;
+    setRemovingKey(itemKey);
+
     try {
       await removeHistoryItem(user.sessionId, item.text, item.type);
       setItems((current) =>
@@ -69,18 +77,23 @@ export function HistoryPage() {
           (entry) => !(entry.text === item.text && entry.type === item.type),
         ),
       );
-      setStatus("");
+      setStatus("Feedback removed.");
     } catch (error) {
       setStatus(error instanceof Error ? error.message : "Unable to remove item.");
+    } finally {
+      setRemovingKey(null);
     }
   }
 
   return (
     <div className="history-layout">
-      <section className="history-header">
+      <RevealSection className="history-header">
         <div className="section-heading">
           <p className="eyebrow">Feedback History</p>
-          <h2>Inspect and edit what the agent has learned.</h2>
+          <h2>
+            Inspect and edit what the agent has{" "}
+            <span className="gradient-text gradient-text-on-dark">learned.</span>
+          </h2>
         </div>
 
         <label className="filter-field">
@@ -93,10 +106,21 @@ export function HistoryPage() {
             ))}
           </select>
         </label>
-      </section>
+      </RevealSection>
 
-      <section className="history-list-card">
-        {status ? <p className="muted-copy">{status}</p> : null}
+      <RevealSection className="history-list-card">
+        <div className="history-toolbar">
+          <p className="muted-copy status-inline" aria-live="polite">
+            {isLoading
+              ? "Loading feedback history..."
+              : `${filteredItems.length} visible item${filteredItems.length === 1 ? "" : "s"}`}
+          </p>
+          {status ? (
+            <p className={status === "Feedback removed." ? "success-copy inline-copy" : "muted-copy inline-copy"}>
+              {status}
+            </p>
+          ) : null}
+        </div>
 
         {filteredItems.length ? (
           <div className="history-list">
@@ -109,20 +133,25 @@ export function HistoryPage() {
                   <p>{item.text}</p>
                 </div>
 
-                <button className="ghost-button" onClick={() => handleRemove(item)}>
-                  Remove
+                <button
+                  type="button"
+                  className="ghost-button"
+                  disabled={removingKey === `${item.type}-${item.text}`}
+                  onClick={() => handleRemove(item)}
+                >
+                  {removingKey === `${item.type}-${item.text}` ? "Removing..." : "Remove"}
                 </button>
               </article>
             ))}
           </div>
         ) : (
-          !status && (
+          !isLoading && (
             <div className="empty-state">
-              <p>No items match the selected filter.</p>
+              <p>No items match this filter yet. Try another view or give the agent more feedback.</p>
             </div>
           )
         )}
-      </section>
+      </RevealSection>
     </div>
   );
 }
