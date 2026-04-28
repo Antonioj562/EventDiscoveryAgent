@@ -7,3 +7,4 @@ def test_basic_recommendation():
 
     result = recommend_events(user_input)
     assert "recommendations" in result
+    assert isinstance(result["recommendations"], list)

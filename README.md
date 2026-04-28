@@ -48,6 +48,7 @@ $ python backend/app.py
 ### 2. Add environment variables
 Create .env
 - GOOGLE_API_KEY=your_api_key_here
+- TICKETMASTER_API_KEY=your_api_key_here
 
 ### 3. Run backend
 From root directory

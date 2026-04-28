@@ -399,10 +399,36 @@ textarea {
   font-size: 1.35rem;
 }
 
+.event-detail-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 0.75rem;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
 .event-card p,
 .history-item p {
   margin: 0;
   color: #f1dfd7;
+}
+
+.event-link,
+.history-meta-copy {
+  color: var(--muted);
+}
+
+.event-link {
+  display: inline-flex;
+  margin-top: 0.9rem;
+  text-decoration: underline;
+  text-underline-offset: 0.18rem;
+}
+
+.history-meta-copy {
+  margin-top: 0.45rem;
+  font-size: 0.92rem;
 }
 
 .history-layout {

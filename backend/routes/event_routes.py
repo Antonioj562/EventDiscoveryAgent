@@ -1,6 +1,11 @@
 from fastapi import APIRouter, HTTPException
 from backend.services.recommendation_service import recommend_events
-from backend.agent.agent_loop import get_or_create_session, sessions
+from backend.agent.agent_loop import sessions
+from backend.services.session_service import (
+    add_feedback_item,
+    get_or_create_session,
+    remove_feedback_item,
+)
 
 
 router = APIRouter(prefix="/events")
@@ -12,42 +17,35 @@ def recommend(user_input: dict):
 @router.post("/feedback")
 def feedback(data: dict):
     session_id = data["session_id"]
-    feedback = data["feedback"]  # "interested", "not_interested", "attended"
-    text = data["event_text"]
+    feedback_type = data["feedback"]  # "interested", "not_interested", "attended"
+    event = data.get("event")
 
-    session = get_or_create_session(session_id)
+    if not event and data.get("event_text"):
+        event = {
+            "id": data["event_text"],
+            "name": data["event_text"],
+            "description": data["event_text"],
+        }
 
-    if feedback == "interested":
-        session["preferences"]["liked"].append(text)
-    elif feedback == "not_interested":
-        session["preferences"]["disliked"].append(text)
-    elif feedback == "attended":
-        session["preferences"]["attended"].append(text)
-    else:
+    if feedback_type not in {"interested", "not_interested", "attended"}:
         raise HTTPException(status_code=400, detail="Invalid feedback type")
 
-    return {"message": "Feedback saved"}
+    if not event:
+        raise HTTPException(status_code=400, detail="Event payload is required")
+
+    add_feedback_item(sessions, session_id, feedback_type, event)
+    return {"message": "Feedback saved", "saved": True}
 
 
 @router.get("/history/{session_id}")
 def history(session_id: str):
-    session = sessions.get(session_id)
-
-    if not session:
-        return {
-            "session_id": session_id,
-            "history": {
-                "interested": [],
-                "not_interested": [],
-                "attended": [],
-            },
-        }
+    session = get_or_create_session(sessions, session_id)
 
     return {
         "session_id": session_id,
         "history": {
-            "interested": session["preferences"]["liked"],
-            "not_interested": session["preferences"]["disliked"],
+            "interested": session["preferences"]["interested"],
+            "not_interested": session["preferences"]["not_interested"],
             "attended": session["preferences"]["attended"],
         },
     }
@@ -60,21 +58,14 @@ def remove_history_item(session_id: str, data: dict):
     if not session:
         raise HTTPException(status_code=404, detail="Invalid session")
 
-    feedback = data["feedback"]
-    text = data["event_text"]
+    feedback_type = data["feedback"]
+    event_id = str(data.get("event_id") or data.get("event_text") or "")
 
-    bucket_map = {
-        "interested": "liked",
-        "not_interested": "disliked",
-        "attended": "attended",
-    }
-    bucket = bucket_map.get(feedback)
-
-    if not bucket:
+    if feedback_type not in {"interested", "not_interested", "attended"}:
         raise HTTPException(status_code=400, detail="Invalid feedback type")
 
-    items = session["preferences"][bucket]
-    if text in items:
-        items.remove(text)
+    if not event_id:
+        raise HTTPException(status_code=400, detail="Event identifier is required")
 
+    remove_feedback_item(sessions, session_id, feedback_type, event_id)
     return {"message": "History item removed"}

@@ -1,4 +1,5 @@
 import type {
+  EventRecommendation,
   FeedbackType,
   HistoryResponse,
   RecommendationResponse,
@@ -37,14 +38,14 @@ export function fetchRecommendations(sessionId: string, text: string) {
 
 export function submitFeedback(
   sessionId: string,
-  eventText: string,
+  event: EventRecommendation,
   feedback: FeedbackType,
 ) {
   return request<{ message: string }>("/events/feedback", {
     method: "POST",
     body: JSON.stringify({
       session_id: sessionId,
-      event_text: eventText,
+      event,
       feedback,
     }),
   });
@@ -56,13 +57,13 @@ export function fetchHistory(sessionId: string) {
 
 export function removeHistoryItem(
   sessionId: string,
-  eventText: string,
+  eventId: string,
   feedback: FeedbackType,
 ) {
   return request<{ message: string }>(`/events/history/${sessionId}`, {
     method: "DELETE",
     body: JSON.stringify({
-      event_text: eventText,
+      event_id: eventId,
       feedback,
     }),
   });

@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { fetchHistory, removeHistoryItem } from "../lib/api";
-import type { FeedbackType } from "../types";
+import type { EventRecommendation, FeedbackType } from "../types";
 
 interface HistoryItem {
   type: FeedbackType;
-  text: string;
+  event: EventRecommendation;
 }
 
 const filters: Array<{ label: string; value: "all" | FeedbackType }> = [
@@ -30,17 +30,17 @@ export function HistoryPage() {
       try {
         const response = await fetchHistory(user.sessionId);
         const nextItems: HistoryItem[] = [
-          ...response.history.interested.map((text) => ({
+          ...response.history.interested.map((event) => ({
             type: "interested" as const,
-            text,
+            event,
           })),
-          ...response.history.not_interested.map((text) => ({
+          ...response.history.not_interested.map((event) => ({
             type: "not_interested" as const,
-            text,
+            event,
           })),
-          ...response.history.attended.map((text) => ({
+          ...response.history.attended.map((event) => ({
             type: "attended" as const,
-            text,
+            event,
           })),
         ];
 
@@ -63,10 +63,10 @@ export function HistoryPage() {
     }
 
     try {
-      await removeHistoryItem(user.sessionId, item.text, item.type);
+      await removeHistoryItem(user.sessionId, item.event.id, item.type);
       setItems((current) =>
         current.filter(
-          (entry) => !(entry.text === item.text && entry.type === item.type),
+          (entry) => !(entry.event.id === item.event.id && entry.type === item.type),
         ),
       );
       setStatus("");
@@ -101,12 +101,17 @@ export function HistoryPage() {
         {filteredItems.length ? (
           <div className="history-list">
             {filteredItems.map((item) => (
-              <article key={`${item.type}-${item.text}`} className="history-item">
+              <article key={`${item.type}-${item.event.id}`} className="history-item">
                 <div>
                   <span className={`history-tag history-tag-${item.type}`}>
                     {item.type.replace("_", " ")}
                   </span>
-                  <p>{item.text}</p>
+                  <p>{item.event.name}</p>
+                  <p className="history-meta-copy">
+                    {[item.event.venue, item.event.location, item.event.localDate]
+                      .filter(Boolean)
+                      .join(" | ") || item.event.description}
+                  </p>
                 </div>
 
                 <button className="ghost-button" onClick={() => handleRemove(item)}>
