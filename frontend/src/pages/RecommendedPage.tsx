@@ -35,7 +35,7 @@ export function RecommendedPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [feedbackMessage, setFeedbackMessage] = useState("");
-  const [pendingFeedbackId, setPendingFeedbackId] = useState<number | null>(null);
+  const [pendingFeedbackId, setPendingFeedbackId] = useState<string | null>(null);
   const [meta, setMeta] = useState<StoredRecommendations["meta"]>();
 
   const resultCountLabel = !events.length
